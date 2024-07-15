@@ -1,0 +1,43 @@
+{
+    "items_indicator": {
+        "search_indicator": ""
+    },
+    "items_search": [
+        {
+            "title": "2. BLOOD",
+            "content": "",
+            "Label_1": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQOqSBDduwVY8GY-Mf8gvwqTWeEtyztoxFzaw&s",
+            "Label_2": "PHYSIOLOGY_S",
+            "Label_3": "",
+            "Label_4": "",
+            "IMG": ""
+        },
+        {
+            "title": "1. GENERAL PHYSIOLOGY",
+            "content": "<p>&nbsp;fghfhf</p>",
+            "Label_1": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStWa7jp7I50s1YklWKC_x6gwUX9UxjYYdg5g&s",
+            "Label_2": "PHYSIOLOGY_S",
+            "Label_3": "",
+            "Label_4": "",
+            "IMG": ""
+        },
+        {
+            "title": "2. HEAD NECK FACE",
+            "content": "",
+            "Label_1": "https://img.freepik.com/free-vector/colorful-kite-flying-blue-sky_1308-29925.jpg",
+            "Label_2": "PHYSIOLOGY_S",
+            "Label_3": "",
+            "Label_4": "",
+            "IMG": ""
+        },
+        {
+            "title": "1. THORAX",
+            "content": "<p>&nbsp;fdgtdfgf</p>",
+            "Label_1": "ANATOMY_S",
+            "Label_2": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStWa7jp7I50s1YklWKC_x6gwUX9UxjYYdg5g&s",
+            "Label_3": "",
+            "Label_4": "",
+            "IMG": ""
+        }
+    ]
+}
