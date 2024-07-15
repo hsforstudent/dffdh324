@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Viewer</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        #pdf-container {
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
+            max-width: 900px;
+            position: relative;
+            height: 100vh; /* Make sure the container takes the full viewport height */
+        }
+        #progress-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        #progress-ring {
+            width: 120px;
+            height: 120px;
+            position: relative;
+        }
+        #progress-ring circle {
+            fill: none;
+            stroke-width: 10;
+            stroke-linecap: round;
+        }
+        #progress-ring .behind {
+            stroke: #444;
+        }
+        #progress-ring .front {
+            stroke: #76c7c0;
+            stroke-dasharray: 300;
+            stroke-dashoffset: 0;
+            transition: stroke-dashoffset 0.3s;
+        }
+        #percentage {
+            font-size: 24px;
+            margin-top: 10px;
+        }
+        canvas {
+            display: block;
+            margin: 20px auto;
+            width: 100%;
+            height: auto;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+</head>
+<body>
+    <div id="pdf-container">
+        <div id="progress-container">
+            <div id="progress-ring">
+                <svg width="120" height="120">
+                    <circle class="behind" cx="60" cy="60" r="45"></circle>
+                    <circle class="front" cx="60" cy="60" r="45"></circle>
+                </svg>
+                <div id="percentage">0%</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to get URL parameters
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        const fileId = getUrlParameter('id'); // Extract the 'id' from the URL
+        const apiKey = 'AIzaSyABIgT5puprGJIV4Yn7UO41Mzn9PIyj1_Y'; // Keep the API key as is
+        const pdfUrl = `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media&key=${apiKey}`;
+
+        const container = document.getElementById('pdf-container');
+        const progressFront = document.querySelector('#progress-ring .front');
+        const percentageText = document.getElementById('percentage');
+
+        const loadingTask = pdfjsLib.getDocument(pdfUrl);
+
+        loadingTask.onProgress = (progressData) => {
+            const percent = Math.floor(progressData.loaded / progressData.total * 100);
+            const offset = (1 - percent / 100) * 300;
+            progressFront.style.strokeDashoffset = offset;
+            percentageText.textContent = `${percent}%`;
+        };
+
+        loadingTask.promise.then(pdfDoc => {
+            container.innerHTML = ''; // Clear the loading message
+            const numPages = pdfDoc.numPages;
+
+            // Function to render a single page
+            const renderPage = pageNum => {
+                pdfDoc.getPage(pageNum).then(page => {
+                    const viewport = page.getViewport({ scale: 1.5 });
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+
+                    canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+                    container.appendChild(canvas);
+
+                    const renderContext = {
+                        canvasContext: context,
+                        viewport: viewport
+                    };
+                    page.render(renderContext).promise.then(() => {
+                        if (pageNum < numPages) {
+                            renderPage(pageNum + 1); // Render the next page
+                        }
+                    });
+                });
+            };
+
+            // Start rendering the first page
+            renderPage(1);
+        }).catch(error => {
+            console.error('Error loading PDF:', error);
+            container.innerHTML = 'Failed to load PDF. Check the URL and try again.';
+        });
+    </script>
+</body>
+</html>
